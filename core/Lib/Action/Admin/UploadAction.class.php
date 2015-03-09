@@ -4,7 +4,6 @@
  * @package GXCMS.Administrator
  * @link    www.gxcms.com
  */
-include 'simple_html_dom.php';
 class UploadAction extends AdminAction{
 	// 列表		
     public function show(){
@@ -16,12 +15,12 @@ class UploadAction extends AdminAction{
     }
     //选择文件
     public function select1(){
-    	echo($_POST['mid']);
+    	include 'simple_html_dom.php';
 		echo('<div style="font-size:12px; height:30px; line-height:30px">');
 		$uppath   = './'.C('upload_path').'/';
 		$uppath_s = './'.C('upload_path').'-s/';
 		$mid      = trim($_POST['mid']);
-		$fileback = !empty($_POST['fileback']) ? trim($_POST['fileback']) : 'filepath';
+		$fileback = !empty($_POST['mid']) ? trim($_POST['fileback']) : 'filepath';
 		if ($mid) {
 			$uppath.= $mid.'/';
 			$uppath_s.= $mid.'/';
@@ -55,13 +54,15 @@ class UploadAction extends AdminAction{
 			$img = D('Down');
 			$img->ftp_upload($backpath.$uploadList[0]['savename']);
 		}
-		$mCode = substr($fileback,0,strripos($fileback, '\\'));
-		$Code = substr($mCode,strripos($mCode, '\\'));
+		$mCode = substr($mid,0,strripos($mid, '\\'));
+		$Code = substr($mCode,strripos($mCode, '\\')+1);
 		$html = new simple_html_dom();
-		$html->loadFile('http://javzoo.com/tw/search/'.$Code);
-		$html->find($selector);
-		
-		$html->load_file($detailLink);
+		$urlStr = 'http://javzoo.com/tw/search/'.$Code;
+		$html->file_get_html($urlStr);
+		dump($html->file_get_html($urlStr));
+		$detailLink=$html->find('a[target="_blank"]',0);
+		echo($detailLink);
+		$html->file_get_html($detailLink);
 		$content=$html->find('div[class="container"]',1);
 		$name = $content->find('h3')->innertext;
 		$imgUrl = $content->find('a[class="bigImage"]')->href;
