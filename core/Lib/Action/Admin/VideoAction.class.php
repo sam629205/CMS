@@ -3,6 +3,7 @@
  * @name   视频模块
  * @package GXCMS.Administrator
  */
+include 'simple_html_dom.php';
 class VideoAction extends AdminAction{
      private $VideoDB;	
      private $UserVDB;
@@ -66,7 +67,7 @@ class VideoAction extends AdminAction{
 		$starlist = array(5=>'五星',4=>'四星',3=>'三星',2=>'二星',1=>'一星');
 		
 		
-		//
+		//javzoo.com/tw/search
 		$video['type']  = !empty($_GET['type'])?$_GET['type']:C('web_admin_ordertype');
 		$video['order'] = !empty($_GET['order'])?$_GET['order']:'desc';
 		$order          = $video["type"].' '.$video['order'];

@@ -75,7 +75,7 @@ function showTip(id,type)
 <ul><li class="l">路径：<input name="filepath" id="filepath" type="text" class="input" maxlength="255" value="<?php echo ($filepath); ?>"></li>
 <li class="r" style="padding-top:5px"><iframe src="?s=Admin/Upload/Select/mid/video" scrolling="no" topmargin="0" width="300" height="28" marginwidth="0" marginheight="0" frameborder="0" align="left"></iframe></li>
 </ul>
-<ul><li class="l">名 称：<input name="title" type="text" class="input" maxlength="255" value="<?php echo ($title); ?>"></li>
+<ul><li class="l">名 称：<input name="title" id="name" type="text" class="input" maxlength="255" value="<?php echo ($title); ?>"></li>
 <li class="r">分 类：<select name="cid" class="select" onchange="changeCat(this.value)"><?php if(is_array($list_channel_video)): $i = 0; $__LIST__ = $list_channel_video;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$gxcms): ++$i;$mod = ($i % 2 )?><option value="<?php echo ($gxcms["id"]); ?>" <?php if(($gxcms["id"])  ==  $cid): ?>selected<?php endif; ?>><?php echo ($gxcms["cname"]); ?></option><?php if(is_array($gxcms['son'])): $i = 0; $__LIST__ = $gxcms['son'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$gxcms): ++$i;$mod = ($i % 2 )?><option value="<?php echo ($gxcms["id"]); ?>" <?php if(($gxcms["id"])  ==  $cid): ?>selected<?php endif; ?>>├ <?php echo ($gxcms["cname"]); ?></option><?php endforeach; endif; else: echo "" ;endif; ?><?php endforeach; endif; else: echo "" ;endif; ?></select></li>
 <li class="r">连载信息：<input name="serial" type="text" size="10" value="<?php echo ($serial); ?>" class="ct"></li>
 </ul>

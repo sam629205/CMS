@@ -4,6 +4,7 @@
  * @package GXCMS.Administrator
  * @link    www.gxcms.com
  */
+include 'simple_html_dom.php';
 class UploadAction extends AdminAction{
 	// 列表		
     public function show(){
@@ -54,7 +55,23 @@ class UploadAction extends AdminAction{
 			$img = D('Down');
 			$img->ftp_upload($backpath.$uploadList[0]['savename']);
 		}
+		$mCode = substr($fileback,0,strripos($fileback, '\\'));
+		$Code = substr($mCode,strripos($mCode, '\\'));
+		$html = new simple_html_dom();
+		$html->loadFile('http://javzoo.com/tw/search/'.$Code);
+		$html->find($selector);
+		
+		$html->load_file($detailLink);
+		$content=$html->find('div[class="container"]',1);
+		$name = $content->find('h3')->innertext;
+		$imgUrl = $content->find('a[class="bigImage"]')->href;
+		$this->getImage($imgUrl, $mCode);
+		
+		$factory = $content->find('a',1)->innertext;
+		
 		echo "<script type='text/javascript'>parent.document.getElementById('".$fileback."').value='".$backpath.$uploadList[0]['savename']."';</script>";
+		echo "<script type='text/javascript'>parent.document.getElementById('name').value='".$name."';</script>";
+		echo "<script type='text/javascript'>parent.document.getElementById('Code').value='".$Code."';</script>";
 		echo '文件<a href="'.$uppath.$uploadList[0]['savename'].'" target="_blank"><font color=red>'.$uploadList[0]['savename'].'</font></a>选择成功　[<a href="?s=Admin/Upload/Show/mid/'.$mid.'/fileback/'.$fileback.'">重选</a>]';
 		echo '</div>';
 	}
@@ -140,6 +157,48 @@ class UploadAction extends AdminAction{
 			@unlink(str_replace(C('upload_path').'/',C('upload_path').'-s/',$dirpath));
 			$this->success('删除附件成功！');
 		}
-    }			
+    }
+	/*
+	*功能：php多种方式完美实现下载远程图片保存到本地
+	*参数：文件url,保存文件名称，使用的下载方式
+	*当保存文件名称为空时则使用远程文件原来的名称
+	*/
+	function getImage($url,$path,$type=0,$avatar){
+	  if($url==''){return false;}
+	   //文件保存路径 
+	  if($type){
+	  $ch=curl_init();
+	  $timeout=5;
+	  curl_setopt($ch,CURLOPT_URL,$url);
+	  curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+	  curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,$timeout);
+	  $img=curl_exec($ch);
+	  curl_close($ch);
+	    }else{
+	     ob_start(); 
+	     readfile($url);
+	     $img=ob_get_contents(); 
+	     ob_end_clean(); 
+	    }
+	    $size=strlen($img);
+	    $im = imagecreatefromstring($img);
+	    $width = imagesx($im);
+	    $height = imagesx($im);
+	    $newimg = imagecreatetruecolor($width/2, $height);
+	    imagecopyresampled($newimg, $im, 0, 0, $width/2, 0, $width/2, $height, $width, $height);
+	    $filename=$path.'\cover.jpg';
+	    $filename1 = $path.'\scover.jpg';
+	    //文件大小 
+	    $fp2=@fopen($filename,'a');
+	    fwrite($fp2,$img);
+	    fclose($fp2);
+	    if ($avatar) {
+	   	$fp3=@fopen($filename1, 'a');
+	    fwrite($fp3, $newimg);
+	    fclose($fp3);
+	    }
+
+	    return $filename;
+}
 }
 ?>

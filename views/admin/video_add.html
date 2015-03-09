@@ -77,9 +77,13 @@ function showTip(id,type)
 <ul><li class="l">路径：<input name="filepath" id="filepath" type="text" class="input" maxlength="255" value="{$filepath}"></li>
 <li class="r" style="padding-top:5px"><iframe src="?s=Admin/Upload/Select/mid/video" scrolling="no" topmargin="0" width="300" height="28" marginwidth="0" marginheight="0" frameborder="0" align="left"></iframe></li>
 </ul>
-<ul><li class="l">名 称：<input name="title" type="text" class="input" maxlength="255" value="{$title}"></li>
+<ul><li class="l">名 称：<input name="title" id="name" type="text" class="input" maxlength="255" value="{$title}"></li>
 <li class="r">分 类：<select name="cid" class="select" onchange="changeCat(this.value)"><volist name="list_channel_video" id="gxcms"><option value="{$gxcms.id}" <eq name="gxcms.id" value="$cid">selected</eq>>{$gxcms.cname}</option><volist name="gxcms['son']" id="gxcms"><option value="{$gxcms.id}" <eq name="gxcms.id" value="$cid">selected</eq>>├ {$gxcms.cname}</option></volist></volist></select></li>
 <li class="r">连载信息：<input name="serial" type="text" size="10" value="{$serial}" class="ct"></li>
+</ul>
+
+</ul>
+<ul><li class="l">编号：<input name="title" id="code" type="text" class="input" maxlength="255" value="{$code}"></li>
 </ul>
 
 <ul>
