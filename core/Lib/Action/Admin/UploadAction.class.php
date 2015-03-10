@@ -16,7 +16,6 @@ class UploadAction extends AdminAction{
     //选择文件
     public function select1(){
     	include 'simple_html_dom.php';
-    	include 'Snoopy.class.php';
 		echo('<div style="font-size:12px; height:30px; line-height:30px">');
 		$uppath   = './'.C('upload_path').'/';
 		$uppath_s = './'.C('upload_path').'-s/';
@@ -59,11 +58,13 @@ class UploadAction extends AdminAction{
 		$Code = substr($mCode,strripos($mCode, "\\")+1);
 		$html = new simple_html_dom();
 // 		$urlStr = 'http://www.javzoo.com/tw/search/'.$Code;
-		$urlStr = 'http://www.baidu.com.com';
+		$urlStr = 'http://www.javzoo.com/ja/movie/4pmt';
 		$opts = array(
 		'http'=>array(
 		'method'=>"GET",
 		'timeout'=>20,
+//		'proxy' => 'http://127.0.0.1:8087', 
+//		'request_fulluri' => True
 		)
 		);
 // 		//发包数据
@@ -84,7 +85,10 @@ class UploadAction extends AdminAction{
 		//设置超时
 		$context = stream_context_create($opts);
 		
-		echo $this->grabHtml($urlStr, $cookie_jar, 'http://www.javzoo.com/tw');
+		
+		
+//		$this->grabHtml($urlStr, $cookie_jar, 'http://www.javzoo.com');
+		
 		//从一个URL或者文件创建一个DOM对象
 		echo(file_get_html($urlStr, false, $context));
 		echo($html);
@@ -235,6 +239,7 @@ class UploadAction extends AdminAction{
 function grabHtml($url,$cookie_jar,$referer){
 	$cookie_jar = '/tmp/cookie.tmp';
 	$ch = curl_init();
+	echo '12';
 	$options = array(CURLOPT_URL => $url,
 			CURLOPT_HEADER => 0,
 			CURLOPT_NOBODY => 0,
@@ -242,10 +247,13 @@ function grabHtml($url,$cookie_jar,$referer){
 			CURLOPT_POST => 0,
 			CURLOPT_RETURNTRANSFER => 1,
 			CURLOPT_FOLLOWLOCATION => 1,
-			CURLOPT_USERAGENT => 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)',
-			CURLOPT_COOKIEJAR => $cookie_jar,
-			CURLOPT_COOKIEFILE => $cookie_jar,
-			CURLOPT_REFERER => $referer
+			CURLOPT_USERAGENT => 'Baiduspider+(+http://www.baidu.com/search/spider.htm)',
+			CURLOPT_ENCODING=>'gzip,deflate',//GZIP解压
+			CURLOPT_USERAGENT=>'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)',
+//			CURLOPT_COOKIEJAR => $cookie_jar,
+//			CURLOPT_COOKIEFILE => $cookie_jar,
+			CURLOPT_REFERER => $referer,
+			CURLOPT_CONNECTTIMEOUT=>40
 	);
 	curl_setopt_array($ch, $options);
 	$code = curl_exec($ch);
