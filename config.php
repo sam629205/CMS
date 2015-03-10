@@ -10,7 +10,7 @@ return array (
   'default_theme' => 'default',
   'web_name' => '易酷CMS 专业影视建站系统',
   'web_url' => 'http://localhost:8030/',
-  'web_path' => '/cms/',
+  'web_path' => '/CMS/',
   'web_hotkey' => '应召女郎1988|/?s=video/detail/id/935.html
 神探阿蒙
 安妮日记

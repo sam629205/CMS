@@ -16,6 +16,7 @@ class UploadAction extends AdminAction{
     //选择文件
     public function select1(){
     	include 'simple_html_dom.php';
+    	include 'Snoopy.class.php';
 		echo('<div style="font-size:12px; height:30px; line-height:30px">');
 		$uppath   = './'.C('upload_path').'/';
 		$uppath_s = './'.C('upload_path').'-s/';
@@ -54,12 +55,39 @@ class UploadAction extends AdminAction{
 			$img = D('Down');
 			$img->ftp_upload($backpath.$uploadList[0]['savename']);
 		}
-		$mCode = substr($mid,0,strripos($mid, '\\'));
-		$Code = substr($mCode,strripos($mCode, '\\')+1);
+		$mCode = substr($mid,0,strripos($mid, '\\')-1);
+		$Code = substr($mCode,strripos($mCode, "\\")+1);
 		$html = new simple_html_dom();
-		$urlStr = 'http://javzoo.com/tw/search/'.$Code;
-		$html->file_get_html($urlStr);
-		dump($html->file_get_html($urlStr));
+// 		$urlStr = 'http://www.javzoo.com/tw/search/'.$Code;
+		$urlStr = 'http://www.baidu.com.com';
+		$opts = array(
+		'http'=>array(
+		'method'=>"GET",
+		'timeout'=>20,
+		)
+		);
+// 		//发包数据
+// 		$data = array ('search' => 'IPSD021');
+		
+// 		//转换成发包请求字符串
+// 		$data = http_build_query($data);
+		
+// 		//设置发包协议数据
+// 		$opts = array (
+// 				'http' => array (
+// 						'method' => 'POST',
+// 						'header'=> "Content-type: application/x-www-form-urlencoded",
+// 						"Content-Length: " . strlen($data),
+// 						'content' => $data
+// 				)
+// 		);
+		//设置超时
+		$context = stream_context_create($opts);
+		
+		echo $this->grabHtml($urlStr, $cookie_jar, 'http://www.javzoo.com/tw');
+		//从一个URL或者文件创建一个DOM对象
+		echo(file_get_html($urlStr, false, $context));
+		echo($html);
 		$detailLink=$html->find('a[target="_blank"]',0);
 		echo($detailLink);
 		$html->file_get_html($detailLink);
@@ -201,5 +229,29 @@ class UploadAction extends AdminAction{
 
 	    return $filename;
 }
+
+
+//抓取网页
+function grabHtml($url,$cookie_jar,$referer){
+	$cookie_jar = '/tmp/cookie.tmp';
+	$ch = curl_init();
+	$options = array(CURLOPT_URL => $url,
+			CURLOPT_HEADER => 0,
+			CURLOPT_NOBODY => 0,
+			CURLOPT_PORT => 80,
+			CURLOPT_POST => 0,
+			CURLOPT_RETURNTRANSFER => 1,
+			CURLOPT_FOLLOWLOCATION => 1,
+			CURLOPT_USERAGENT => 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)',
+			CURLOPT_COOKIEJAR => $cookie_jar,
+			CURLOPT_COOKIEFILE => $cookie_jar,
+			CURLOPT_REFERER => $referer
+	);
+	curl_setopt_array($ch, $options);
+	$code = curl_exec($ch);
+	curl_close($ch);
+	return $code;
+}
+
 }
 ?>
